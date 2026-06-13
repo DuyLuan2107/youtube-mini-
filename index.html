@@ -4,9 +4,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-title" content="Inv Mini">
+<meta name="apple-mobile-web-app-title" content="YT Best">
 <link rel="apple-touch-icon" href="icon.png">
-<title>Invidious Mini v4</title>
+<title>YouTube Mini Best v5</title>
 <style>
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html,body{margin:0;padding:0;height:100%;font-family:-apple-system,Helvetica,Arial,sans-serif;background:#111;color:#fff}
@@ -17,52 +17,51 @@ body{overflow:hidden}
 #q{flex:1;height:34px;border:1px solid #444;border-radius:18px;background:#222;color:#fff;padding:0 12px;font-size:14px;outline:none}
 .btn{border:0;border-radius:17px;background:#e60000;color:#fff;padding:8px 9px;font-size:13px}
 .gray{background:#333;color:#eee}
-#bar{height:42px;background:#181818;border-bottom:1px solid #333;display:flex;align-items:center;gap:6px;padding:4px 8px;flex-shrink:0}
-#server{height:32px;border:1px solid #444;border-radius:16px;background:#222;color:#fff;font-size:12px;max-width:155px}
+#player{width:100%;height:220px;border:0;background:#000;display:block;flex-shrink:0}
+#bar{height:42px;background:#181818;border-top:1px solid #333;border-bottom:1px solid #333;display:flex;align-items:center;gap:6px;padding:4px 8px;flex-shrink:0}
 #status{flex:1;font-size:12px;color:#aaa;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-#frame{flex:1;width:100%;border:0;background:#000;display:block}
-#fallback{display:none;flex:1;overflow:auto;-webkit-overflow-scrolling:touch;padding:14px;background:#111}
-.card{background:#1d1d1f;border:1px solid #333;border-radius:14px;padding:12px;margin-bottom:10px}
-.card h3{margin:0 0 8px 0;font-size:15px}
-.card p{font-size:13px;line-height:1.4;color:#bbb;margin:0 0 10px 0}
-.full{width:100%;margin-top:8px}
+#content{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;background:#111;padding:8px}
+.card{background:#1d1d1f;border:1px solid #333;border-radius:14px;padding:10px;margin-bottom:8px}
+.card h3{margin:0 0 7px 0;font-size:15px}
+.card p{font-size:13px;line-height:1.4;color:#bbb;margin:0 0 8px 0}
+.row{display:flex;gap:6px;margin-top:6px}
+.row button{flex:1}
+.item{display:flex;gap:8px;padding:8px;border-bottom:1px solid #252525;background:#111}
+.thumb{width:112px;height:63px;background:#222;object-fit:cover;flex-shrink:0}
+.info{flex:1;min-width:0}
+.title{font-size:14px;line-height:1.25;max-height:38px;overflow:hidden}
+.meta{font-size:11px;color:#777;margin-top:4px}
 .small{font-size:12px;color:#999;line-height:1.4}
-a{color:#8ec5ff}
 </style>
 </head>
 <body>
 <div id="app">
   <div id="top">
-    <div id="logo">Inv Mini</div>
-    <input id="q" placeholder="Từ khóa hoặc link video">
-    <button class="btn" id="go">Tìm</button>
+    <div id="logo">YT Best</div>
+    <input id="q" placeholder="Dán link hoặc gõ từ khóa">
+    <button class="btn" id="go">Mở</button>
   </div>
 
+  <iframe id="player" allowfullscreen></iframe>
+
   <div id="bar">
-    <select id="server">
-      <option value="https://inv.nadeko.net">inv.nadeko.net</option>
-      <option value="https://yewtu.be">yewtu.be</option>
-      <option value="https://invidious.privacyredirect.com">privacyredirect</option>
-      <option value="https://iv.datura.network">iv.datura.network</option>
-      <option value="https://invidious.snopyta.org">snopyta</option>
-    </select>
-    <button class="btn gray" id="home">Home</button>
-    <button class="btn gray" id="open">Mở</button>
+    <button class="btn gray" id="searchMobile">Tìm</button>
+    <button class="btn gray" id="openYT">YT</button>
+    <button class="btn gray" id="clear">Xóa</button>
     <div id="status">Sẵn sàng</div>
   </div>
 
-  <iframe id="frame"></iframe>
-
-  <div id="fallback">
+  <div id="content">
     <div class="card">
-      <h3>Không nhúng được trang</h3>
-      <p>Một số server Invidious không cho hiển thị bên trong iframe. Bấm “Mở” để mở server hiện tại trong Safari/app web.</p>
-      <button class="btn full" id="open2">Mở trang hiện tại</button>
+      <h3>Cách dùng tốt nhất cho iPad Mini 1</h3>
+      <p><b>Muốn ít lag nhất:</b> tìm video ở YouTube Mobile, copy link, quay lại app này dán link để phát bằng embed nhẹ.</p>
+      <p><b>Muốn tìm nhanh:</b> gõ từ khóa rồi bấm nút <b>Tìm</b>, app sẽ mở YouTube Mobile để tìm.</p>
+      <p class="small">Không có cách ép 360p tuyệt đối bằng GitHub Pages. Khi video chạy, bấm bánh răng trong player và chọn 144p/240p/360p nếu có.</p>
     </div>
+
     <div class="card">
-      <h3>Cách dùng</h3>
-      <p>Chọn server → nhập từ khóa như <b>tái sinh</b> → bấm Tìm. Nếu server lỗi, đổi server khác.</p>
-      <p class="small">Bản này không cần API. Nó dùng Invidious như một YouTube nhẹ hơn.</p>
+      <h3>Lịch sử video</h3>
+      <div id="history"></div>
     </div>
   </div>
 </div>
@@ -70,26 +69,12 @@ a{color:#8ec5ff}
 <script>
 (function(){
   var q=document.getElementById("q");
-  var server=document.getElementById("server");
-  var frame=document.getElementById("frame");
-  var fallback=document.getElementById("fallback");
+  var player=document.getElementById("player");
   var status=document.getElementById("status");
-  var currentUrl="";
-  var lastLoadTime=0;
+  var historyBox=document.getElementById("history");
+  var currentId="";
 
   function setStatus(s){status.innerText=s||"";}
-
-  function save(){
-    localStorage.setItem("invmini_server", server.value);
-    if(q.value)localStorage.setItem("invmini_query", q.value);
-  }
-
-  function loadSaved(){
-    var s=localStorage.getItem("invmini_server");
-    if(s)server.value=s;
-    var lq=localStorage.getItem("invmini_query");
-    if(lq)q.value=lq;
-  }
 
   function extractVideoId(text){
     text=String(text||"").trim();
@@ -102,88 +87,105 @@ a{color:#8ec5ff}
     return "";
   }
 
-  function showFrame(){
-    frame.style.display="block";
-    fallback.style.display="none";
+  function getHistory(){
+    try{return JSON.parse(localStorage.getItem("ytbest_history")||"[]");}
+    catch(e){return [];}
   }
 
-  function showFallback(){
-    frame.style.display="none";
-    fallback.style.display="block";
+  function saveHistory(arr){
+    try{localStorage.setItem("ytbest_history",JSON.stringify(arr.slice(0,20)));}
+    catch(e){}
   }
 
-  function goUrl(url,label){
-    currentUrl=url;
-    showFrame();
-    setStatus(label||"Đang mở...");
-    lastLoadTime=new Date().getTime();
-    frame.src=url;
-    localStorage.setItem("invmini_last_url",url);
-
-    // Nếu iframe bị server chặn, nhiều khi chỉ hiện trắng. Sau 5 giây hiện gợi ý.
-    setTimeout(function(){
-      var diff=(new Date().getTime())-lastLoadTime;
-      if(diff>=4900){
-        setStatus("Nếu trắng/lỗi, bấm Mở hoặc đổi server.");
-      }
-    },5000);
+  function addHistory(id,label){
+    var arr=getHistory();
+    for(var i=0;i<arr.length;i++){
+      if(arr[i].id===id){arr.splice(i,1);break;}
+    }
+    arr.unshift({id:id,label:label||id,time:new Date().toLocaleString()});
+    saveHistory(arr);
+    renderHistory();
   }
 
-  function search(){
-    var text=q.value.replace(/^\s+|\s+$/g,"");
-    if(!text)return;
-    save();
-
-    var id=extractVideoId(text);
-    var base=server.value.replace(/\/$/,"");
-
-    if(id){
-      goUrl(base+"/watch?v="+encodeURIComponent(id),"Mở video qua "+base);
-    }else{
-      goUrl(base+"/search?q="+encodeURIComponent(text),"Tìm: "+text);
+  function renderHistory(){
+    var arr=getHistory();
+    historyBox.innerHTML="";
+    if(!arr.length){
+      historyBox.innerHTML='<p class="small">Chưa có video nào.</p>';
+      return;
+    }
+    for(var i=0;i<arr.length;i++){
+      (function(v){
+        var div=document.createElement("div");
+        div.className="item";
+        var img=document.createElement("img");
+        img.className="thumb";
+        img.src="https://i.ytimg.com/vi/"+v.id+"/mqdefault.jpg";
+        var info=document.createElement("div");
+        info.className="info";
+        var t=document.createElement("div");
+        t.className="title";
+        t.innerText=v.label||v.id;
+        var m=document.createElement("div");
+        m.className="meta";
+        m.innerText=v.time||"";
+        info.appendChild(t);info.appendChild(m);
+        div.appendChild(img);div.appendChild(info);
+        div.onclick=function(){play(v.id,v.label);};
+        historyBox.appendChild(div);
+      })(arr[i]);
     }
   }
 
-  function home(){
-    var base=server.value.replace(/\/$/,"");
-    goUrl(base,"Trang chủ");
+  function play(id,label){
+    currentId=id;
+    player.src="https://www.youtube.com/embed/"+id+"?rel=0&modestbranding=1&playsinline=1";
+    setStatus("Đang phát: "+id);
+    addHistory(id,label||id);
+    localStorage.setItem("ytbest_last",id);
   }
 
-  function openCurrent(){
-    var url=currentUrl || server.value;
-    window.location.href=url;
+  function openSearch(){
+    var text=q.value.replace(/^\s+|\s+$/g,"");
+    if(!text)return;
+    var id=extractVideoId(text);
+    if(id){play(id,"Video từ link");return;}
+    window.location.href="https://m.youtube.com/results?search_query="+encodeURIComponent(text);
   }
 
-  document.getElementById("go").onclick=search;
-  document.getElementById("home").onclick=home;
-  document.getElementById("open").onclick=openCurrent;
-  document.getElementById("open2").onclick=openCurrent;
+  document.getElementById("go").onclick=function(){
+    var text=q.value.replace(/^\s+|\s+$/g,"");
+    if(!text)return;
+    var id=extractVideoId(text);
+    if(id){play(id,"Video từ link");}
+    else{openSearch();}
+  };
 
-  server.onchange=function(){
-    save();
-    setStatus("Đã đổi server");
+  document.getElementById("searchMobile").onclick=openSearch;
+
+  document.getElementById("openYT").onclick=function(){
+    if(currentId)window.location.href="https://m.youtube.com/watch?v="+currentId;
+    else window.location.href="https://m.youtube.com";
+  };
+
+  document.getElementById("clear").onclick=function(){
+    player.src="";
+    currentId="";
+    setStatus("Đã xóa");
   };
 
   q.onkeypress=function(e){
     e=e||window.event;
     if(e.keyCode===13){
       if(e.preventDefault)e.preventDefault();
-      search();
+      document.getElementById("go").onclick();
       return false;
     }
   };
 
-  frame.onload=function(){
-    setStatus("Đã tải. Nếu không xem được, đổi server.");
-  };
-
-  loadSaved();
-  var last=localStorage.getItem("invmini_last_url");
-  if(last){
-    goUrl(last,"Mở lại trang trước");
-  }else{
-    showFallback();
-  }
+  renderHistory();
+  var last=localStorage.getItem("ytbest_last")||"";
+  if(last)play(last,"Video trước đó");
 })();
 </script>
 </body>

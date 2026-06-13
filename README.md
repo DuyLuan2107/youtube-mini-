@@ -1,13 +1,7 @@
-# Invidious Mini v4
+# YouTube Mini Best v5
 
-Trình duyệt Invidious chuyên dụng cho iPad Mini 1.
-
-## Tính năng
+Bản ổn định nhất cho iPad Mini 1:
+- Tìm kiếm bằng YouTube Mobile.
+- Phát video bằng embed nhẹ.
+- Lưu lịch sử video để mở lại nhanh.
 - Không cần API key.
-- Nhập từ khóa để mở kết quả tìm kiếm Invidious.
-- Dán link YouTube để mở video qua Invidious.
-- Có nhiều server dự phòng.
-- Add to Home Screen như app.
-
-## Lưu ý
-Một số server có thể chặn iframe. Nếu trang trắng, bấm nút Mở hoặc đổi server.
