@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="YT Mini">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="apple-touch-icon" href="icon.png">
+<title>YouTube Mini v1</title>
+<style>
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;padding:0;height:100%;font-family:-apple-system,Helvetica,Arial,sans-serif;background:#111;color:#fff}
+body{overflow:hidden}
+#app{height:100%;display:flex;flex-direction:column;background:#111}
+#top{height:46px;background:#181818;border-bottom:1px solid #333;display:flex;align-items:center;padding:0 8px;gap:6px;flex-shrink:0}
+#logo{font-weight:bold;font-size:16px;color:#fff;white-space:nowrap}
+#q{flex:1;height:32px;border:1px solid #444;border-radius:18px;background:#222;color:#fff;padding:0 12px;font-size:14px;outline:none}
+.btn{border:0;border-radius:16px;background:#ff0000;color:#fff;padding:8px 10px;font-size:13px}
+.gray{background:#333;color:#eee}
+#playerBox{background:#000;border-bottom:1px solid #333;flex-shrink:0}
+#player{width:100%;height:210px;border:0;background:#000;display:block}
+#tools{height:38px;background:#181818;display:flex;align-items:center;gap:6px;padding:4px 8px;border-bottom:1px solid #333;flex-shrink:0}
+#status{font-size:12px;color:#aaa;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#results{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:8px;background:#111}
+.item{display:flex;gap:8px;padding:8px;border-bottom:1px solid #252525}
+.thumb{width:112px;height:63px;background:#222;object-fit:cover;flex-shrink:0}
+.info{flex:1;min-width:0}
+.title{font-size:14px;line-height:1.25;max-height:36px;overflow:hidden}
+.channel{font-size:12px;color:#aaa;margin-top:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.meta{font-size:11px;color:#777;margin-top:3px}
+#settings{display:none;position:fixed;left:0;right:0;top:0;bottom:0;background:rgba(0,0,0,.6);z-index:9;align-items:center;justify-content:center}
+#panel{width:90%;max-width:360px;background:#202020;border-radius:18px;padding:16px;color:#fff;box-shadow:0 4px 18px rgba(0,0,0,.4)}
+#panel h3{margin:0 0 12px 0}
+label{font-size:13px;color:#bbb;margin-top:10px;display:block}
+input,select{width:100%;height:38px;border:1px solid #444;border-radius:10px;background:#111;color:#fff;padding:0 10px;margin-top:4px;font-size:14px}
+.panelbtn{width:100%;border:0;border-radius:18px;padding:10px;margin-top:10px;font-size:15px}
+.primary{background:#ff0000;color:#fff}
+.small{font-size:12px;color:#aaa;line-height:1.35;margin-top:10px}
+#empty{color:#aaa;text-align:center;padding:28px 12px;font-size:14px;line-height:1.5}
+</style>
+</head>
+<body>
+<div id="app">
+  <div id="top">
+    <div id="logo">YT Mini</div>
+    <input id="q" placeholder="Nhập từ khóa hoặc link YouTube">
+    <button class="btn" id="searchBtn">Tìm</button>
+  </div>
+
+  <div id="playerBox">
+    <iframe id="player" allowfullscreen></iframe>
+  </div>
+
+  <div id="tools">
+    <button class="btn gray" id="clearBtn">Xóa</button>
+    <button class="btn gray" id="openBtn">YouTube</button>
+    <button class="btn gray" id="setBtn">API</button>
+    <div id="status">Nhập link video hoặc cấu hình API key để tìm kiếm.</div>
+  </div>
+
+  <div id="results">
+    <div id="empty">
+      <b>YouTube Mini v1</b><br>
+      Dán link YouTube để xem ngay, hoặc bấm API để nhập YouTube Data API key rồi tìm bằng từ khóa.<br><br>
+      Gợi ý cho iPad Mini 1: chọn video ngắn, nếu lag hãy bấm bánh răng trong player và giảm chất lượng xuống 144p/240p.
+    </div>
+  </div>
+</div>
+
+<div id="settings">
+  <div id="panel">
+    <h3>Cài đặt</h3>
+    <label>YouTube Data API Key</label>
+    <input id="apiKey" placeholder="AIza...">
+    <label>Số kết quả</label>
+    <select id="maxResults">
+      <option value="5">5 kết quả - nhẹ nhất</option>
+      <option value="8">8 kết quả</option>
+      <option value="10">10 kết quả</option>
+    </select>
+    <button class="panelbtn primary" id="saveBtn">Lưu</button>
+    <button class="panelbtn" id="closeBtn">Đóng</button>
+    <div class="small">
+      Search cần YouTube Data API key. Nếu không có key, bạn vẫn dán link YouTube vào ô tìm để xem bằng embed nhẹ.
+      Không upload API key lên GitHub; key chỉ lưu trong Safari localStorage của iPad.
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  var q=document.getElementById("q");
+  var searchBtn=document.getElementById("searchBtn");
+  var results=document.getElementById("results");
+  var player=document.getElementById("player");
+  var status=document.getElementById("status");
+  var settings=document.getElementById("settings");
+  var apiKeyInput=document.getElementById("apiKey");
+  var maxResultsSelect=document.getElementById("maxResults");
+  var currentVideoId="";
+
+  function setStatus(s){status.innerText=s||"";}
+  function getKey(){return localStorage.getItem("ytmini_api_key")||"";}
+  function getMax(){return localStorage.getItem("ytmini_max")||"5";}
+
+  function extractVideoId(text){
+    text=String(text||"").trim();
+    if(!text)return "";
+    var m;
+    m=text.match(/[?&]v=([a-zA-Z0-9_-]{11})/); if(m)return m[1];
+    m=text.match(/youtu\.be\/([a-zA-Z0-9_-]{11})/); if(m)return m[1];
+    m=text.match(/embed\/([a-zA-Z0-9_-]{11})/); if(m)return m[1];
+    if(/^[a-zA-Z0-9_-]{11}$/.test(text))return text;
+    return "";
+  }
+
+  function playVideo(id,title){
+    if(!id)return;
+    currentVideoId=id;
+    localStorage.setItem("ytmini_last_video",id);
+    if(title)localStorage.setItem("ytmini_last_title",title);
+    player.src="https://www.youtube.com/embed/"+id+"?rel=0&modestbranding=1&playsinline=1";
+    setStatus(title||("Đang mở video: "+id));
+    window.scrollTo(0,0);
+  }
+
+  function renderItems(items){
+    results.innerHTML="";
+    if(!items||!items.length){
+      results.innerHTML='<div id="empty">Không có kết quả.</div>';
+      return;
+    }
+    for(var i=0;i<items.length;i++){
+      (function(it){
+        var id=it.id && (it.id.videoId||it.id);
+        var sn=it.snippet||{};
+        var div=document.createElement("div");
+        div.className="item";
+        var img=document.createElement("img");
+        img.className="thumb";
+        img.src=(sn.thumbnails && sn.thumbnails.default && sn.thumbnails.default.url) || "";
+        var info=document.createElement("div");
+        info.className="info";
+        var title=document.createElement("div");
+        title.className="title";
+        title.innerText=sn.title||id;
+        var channel=document.createElement("div");
+        channel.className="channel";
+        channel.innerText=sn.channelTitle||"";
+        var meta=document.createElement("div");
+        meta.className="meta";
+        meta.innerText=(sn.publishedAt||"").slice(0,10);
+        info.appendChild(title); info.appendChild(channel); info.appendChild(meta);
+        div.appendChild(img); div.appendChild(info);
+        div.onclick=function(){playVideo(id,sn.title||"");};
+        results.appendChild(div);
+      })(items[i]);
+    }
+  }
+
+  function escapeHtml(s){return String(s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");}
+
+  function searchYouTube(query){
+    var key=getKey();
+    if(!key){
+      settings.style.display="flex";
+      setStatus("Cần nhập YouTube Data API key để tìm kiếm.");
+      return;
+    }
+    setStatus("Đang tìm...");
+    results.innerHTML='<div id="empty">Đang tìm video...</div>';
+    var url="https://www.googleapis.com/youtube/v3/search?part=snippet&type=video&maxResults="+encodeURIComponent(getMax())+"&q="+encodeURIComponent(query)+"&key="+encodeURIComponent(key);
+    var xhr=new XMLHttpRequest();
+    xhr.open("GET",url,true);
+    xhr.onreadystatechange=function(){
+      if(xhr.readyState===4){
+        if(xhr.status>=200 && xhr.status<300){
+          try{
+            var data=JSON.parse(xhr.responseText);
+            renderItems(data.items||[]);
+            setStatus("Kết quả cho: "+query);
+            localStorage.setItem("ytmini_last_query",query);
+          }catch(e){
+            results.innerHTML='<div id="empty">Lỗi đọc dữ liệu.</div>';
+            setStatus("Lỗi JSON.");
+          }
+        }else{
+          var msg=xhr.responseText||("HTTP "+xhr.status);
+          if(msg.length>200)msg=msg.slice(0,200)+"...";
+          results.innerHTML='<div id="empty">Lỗi tìm kiếm: '+escapeHtml(msg)+'</div>';
+          setStatus("Lỗi API.");
+        }
+      }
+    };
+    xhr.onerror=function(){
+      results.innerHTML='<div id="empty">Lỗi mạng.</div>';
+      setStatus("Lỗi mạng.");
+    };
+    xhr.send();
+  }
+
+  function submit(){
+    var text=q.value.replace(/^\s+|\s+$/g,"");
+    if(!text)return;
+    var id=extractVideoId(text);
+    if(id){ playVideo(id,"Video từ link"); return; }
+    searchYouTube(text);
+  }
+
+  searchBtn.onclick=submit;
+  q.onkeypress=function(e){
+    e=e||window.event;
+    if(e.keyCode===13){
+      if(e.preventDefault)e.preventDefault();
+      submit();
+      return false;
+    }
+  };
+
+  document.getElementById("setBtn").onclick=function(){
+    apiKeyInput.value=getKey();
+    maxResultsSelect.value=getMax();
+    settings.style.display="flex";
+  };
+  document.getElementById("closeBtn").onclick=function(){settings.style.display="none";};
+  document.getElementById("saveBtn").onclick=function(){
+    localStorage.setItem("ytmini_api_key",apiKeyInput.value.replace(/^\s+|\s+$/g,""));
+    localStorage.setItem("ytmini_max",maxResultsSelect.value);
+    settings.style.display="none";
+    setStatus("Đã lưu API key.");
+  };
+  settings.onclick=function(e){if(e.target===settings)settings.style.display="none";};
+
+  document.getElementById("clearBtn").onclick=function(){
+    player.src="";
+    currentVideoId="";
+    results.innerHTML='<div id="empty">Đã xóa. Nhập link hoặc từ khóa để xem tiếp.</div>';
+    setStatus("Sẵn sàng.");
+  };
+
+  document.getElementById("openBtn").onclick=function(){
+    if(currentVideoId){ window.location.href="https://m.youtube.com/watch?v="+currentVideoId; }
+    else{ window.location.href="https://m.youtube.com"; }
+  };
+
+  var last=localStorage.getItem("ytmini_last_video")||"";
+  if(last){ playVideo(last,localStorage.getItem("ytmini_last_title")||"Video trước đó"); }
+})();
+</script>
+</body>
+</html>
