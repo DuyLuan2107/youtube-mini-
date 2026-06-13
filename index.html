@@ -4,57 +4,55 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-title" content="YT Lite">
+<meta name="apple-mobile-web-app-title" content="YT Mini 3">
 <link rel="apple-touch-icon" href="icon.png">
-<title>YouTube Mini Lite</title>
+<title>YouTube Mini v3</title>
 <style>
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html,body{margin:0;padding:0;height:100%;font-family:-apple-system,Helvetica,Arial,sans-serif;background:#111;color:#fff}
 body{overflow:hidden}
 #app{height:100%;display:flex;flex-direction:column;background:#111}
 #top{height:48px;background:#181818;border-bottom:1px solid #333;display:flex;align-items:center;gap:6px;padding:0 8px;flex-shrink:0}
-#logo{font-weight:bold;font-size:16px;color:#fff;white-space:nowrap}
+#logo{font-weight:bold;font-size:15px;color:#fff;white-space:nowrap}
 #q{flex:1;height:34px;border:1px solid #444;border-radius:18px;background:#222;color:#fff;padding:0 12px;font-size:14px;outline:none}
 .btn{border:0;border-radius:17px;background:#e60000;color:#fff;padding:8px 10px;font-size:13px}
 .gray{background:#333;color:#eee}
-#player{width:100%;height:230px;border:0;background:#000;display:block;flex-shrink:0}
-#bar{height:42px;background:#181818;border-top:1px solid #333;border-bottom:1px solid #333;display:flex;align-items:center;gap:6px;padding:4px 8px;flex-shrink:0}
+#player{width:100%;height:218px;border:0;background:#000;display:block;flex-shrink:0}
+#bar{height:40px;background:#181818;border-top:1px solid #333;border-bottom:1px solid #333;display:flex;align-items:center;gap:6px;padding:4px 8px;flex-shrink:0}
 #status{flex:1;font-size:12px;color:#aaa;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-#content{flex:1;overflow:auto;-webkit-overflow-scrolling:touch;padding:12px;background:#111}
-.card{background:#1d1d1f;border:1px solid #333;border-radius:14px;padding:12px;margin-bottom:10px}
-.card h3{margin:0 0 8px 0;font-size:15px}
-.card p{font-size:13px;line-height:1.4;color:#bbb;margin:0 0 10px 0}
-.full{width:100%;margin-top:8px}
-.small{font-size:12px;color:#999;line-height:1.4}
+#results{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;background:#111}
+.item{display:flex;gap:8px;padding:8px;border-bottom:1px solid #252525;background:#111}
+.thumb{width:112px;height:63px;background:#222;object-fit:cover;flex-shrink:0}
+.info{flex:1;min-width:0}
+.title{font-size:14px;line-height:1.25;max-height:38px;overflow:hidden}
+.channel{font-size:12px;color:#aaa;margin-top:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.meta{font-size:11px;color:#777;margin-top:3px}
+#empty{color:#aaa;text-align:center;padding:24px 12px;font-size:14px;line-height:1.5}
 </style>
 </head>
 <body>
 <div id="app">
   <div id="top">
-    <div id="logo">YT Lite</div>
-    <input id="q" placeholder="Dán link YouTube hoặc nhập từ khóa">
-    <button class="btn" id="go">Mở</button>
+    <div id="logo">YT Mini</div>
+    <input id="q" placeholder="Gõ từ khóa hoặc dán link">
+    <button class="btn" id="go">Tìm</button>
   </div>
 
   <iframe id="player" allowfullscreen></iframe>
 
   <div id="bar">
     <button class="btn gray" id="clear">Xóa</button>
-    <button class="btn gray" id="mobile">Tìm mobile</button>
-    <button class="btn gray" id="openyt">YouTube</button>
+    <button class="btn gray" id="mobile">Mobile</button>
+    <button class="btn gray" id="yt">YouTube</button>
     <div id="status">Sẵn sàng</div>
   </div>
 
-  <div id="content">
-    <div class="card">
-      <h3>Cách dùng nhẹ nhất</h3>
-      <p><b>Dán link video</b> vào ô trên → bấm Mở. App sẽ phát bằng YouTube embed, nhẹ hơn trang YouTube đầy đủ.</p>
-      <p><b>Nhập từ khóa</b> → bấm “Tìm mobile” để mở trang tìm kiếm mobile của YouTube.</p>
-      <p class="small">Lưu ý: GitHub Pages không thể ép YouTube luôn 360p. Khi video chạy, bấm bánh răng trong player và chọn 144p/240p/360p nếu có.</p>
-    </div>
-    <div class="card">
-      <h3>Mẹo cho iPad Mini 1</h3>
-      <p>Đóng tab Safari khác, xem video ngắn/360p, tránh 720p/60fps. Nếu video vẫn lag, tải MP4 360p về mở bằng GoodReader sẽ mượt hơn.</p>
+  <div id="results">
+    <div id="empty">
+      <b>YouTube Mini v3</b><br>
+      Gõ từ khóa như “tái sinh”, “lofi”, “doraemon” rồi bấm Tìm.<br>
+      Kết quả sẽ hiện trong app nếu nguồn công khai còn hoạt động.<br><br>
+      Nếu lỗi, bấm Mobile để mở tìm kiếm YouTube mobile.
     </div>
   </div>
 </div>
@@ -63,8 +61,17 @@ body{overflow:hidden}
 (function(){
   var q=document.getElementById("q");
   var player=document.getElementById("player");
+  var results=document.getElementById("results");
   var status=document.getElementById("status");
-  var currentId="";
+  var currentVideoId="";
+  var instances=[
+    "https://inv.nadeko.net",
+    "https://yewtu.be",
+    "https://invidious.privacyredirect.com",
+    "https://iv.datura.network"
+  ];
+
+  function setStatus(s){status.innerText=s||"";}
 
   function extractVideoId(text){
     text=String(text||"").trim();
@@ -77,54 +84,141 @@ body{overflow:hidden}
     return "";
   }
 
-  function play(id){
+  function play(id,title){
     if(!id)return;
-    currentId=id;
-    localStorage.setItem("ytlite_last", id);
+    currentVideoId=id;
+    localStorage.setItem("ytmini3_last",id);
     player.src="https://www.youtube.com/embed/"+id+"?rel=0&modestbranding=1&playsinline=1";
-    status.innerText="Đang phát: "+id;
+    setStatus(title||("Đang phát: "+id));
   }
 
-  function openMobileSearch(){
+  function escapeHtml(s){
+    return String(s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+  }
+
+  function render(items){
+    results.innerHTML="";
+    if(!items || !items.length){
+      results.innerHTML='<div id="empty">Không có kết quả hoặc nguồn đang lỗi. Bấm Mobile để tìm trên YouTube mobile.</div>';
+      return;
+    }
+    var count=0;
+    for(var i=0;i<items.length;i++){
+      var it=items[i];
+      var id=it.videoId || it.id;
+      if(!id || id.length!==11)continue;
+      count++;
+      var div=document.createElement("div");
+      div.className="item";
+
+      var img=document.createElement("img");
+      img.className="thumb";
+      if(it.videoThumbnails && it.videoThumbnails.length){
+        img.src=it.videoThumbnails[0].url;
+      }else{
+        img.src="https://i.ytimg.com/vi/"+id+"/mqdefault.jpg";
+      }
+
+      var info=document.createElement("div");
+      info.className="info";
+
+      var t=document.createElement("div");
+      t.className="title";
+      t.innerText=it.title || id;
+
+      var ch=document.createElement("div");
+      ch.className="channel";
+      ch.innerText=it.author || it.channelTitle || "";
+
+      var meta=document.createElement("div");
+      meta.className="meta";
+      var views=it.viewCount ? (it.viewCount+" lượt xem") : "";
+      var len=it.lengthSeconds ? Math.floor(it.lengthSeconds/60)+":"+("0"+(it.lengthSeconds%60)).slice(-2) : "";
+      meta.innerText=(len?len+" • ":"")+views;
+
+      info.appendChild(t); info.appendChild(ch); info.appendChild(meta);
+      div.appendChild(img); div.appendChild(info);
+
+      (function(videoId,titleText){
+        div.onclick=function(){play(videoId,titleText);};
+      })(id,it.title||"");
+
+      results.appendChild(div);
+      if(count>=10)break;
+    }
+    if(count===0)results.innerHTML='<div id="empty">Không có video hợp lệ.</div>';
+  }
+
+  function searchWithInstance(query,idx){
+    if(idx>=instances.length){
+      results.innerHTML='<div id="empty">Các nguồn công khai đang lỗi/chặn. Bấm Mobile để mở tìm kiếm YouTube mobile.</div>';
+      setStatus("Nguồn lỗi");
+      return;
+    }
+    var base=instances[idx];
+    setStatus("Đang tìm qua nguồn "+(idx+1)+"...");
+    var url=base+"/api/v1/search?q="+encodeURIComponent(query)+"&type=video";
+    var xhr=new XMLHttpRequest();
+    xhr.open("GET",url,true);
+    xhr.onreadystatechange=function(){
+      if(xhr.readyState===4){
+        if(xhr.status>=200 && xhr.status<300){
+          try{
+            var data=JSON.parse(xhr.responseText);
+            render(data);
+            setStatus("Kết quả: "+query);
+            localStorage.setItem("ytmini3_last_query",query);
+          }catch(e){
+            searchWithInstance(query,idx+1);
+          }
+        }else{
+          searchWithInstance(query,idx+1);
+        }
+      }
+    };
+    xhr.onerror=function(){searchWithInstance(query,idx+1);};
+    xhr.send();
+  }
+
+  function doSearch(){
     var text=q.value.replace(/^\s+|\s+$/g,"");
     if(!text)return;
     var id=extractVideoId(text);
-    if(id){play(id);return;}
-    window.location.href="https://m.youtube.com/results?search_query="+encodeURIComponent(text);
+    if(id){play(id,"Video từ link");return;}
+    results.innerHTML='<div id="empty">Đang tìm “'+escapeHtml(text)+'”...</div>';
+    searchWithInstance(text,0);
   }
 
-  document.getElementById("go").onclick=function(){
+  function openMobile(){
     var text=q.value.replace(/^\s+|\s+$/g,"");
-    if(!text)return;
-    var id=extractVideoId(text);
-    if(id){play(id);}
-    else{openMobileSearch();}
-  };
+    if(!text)text=localStorage.getItem("ytmini3_last_query")||"";
+    if(text)window.location.href="https://m.youtube.com/results?search_query="+encodeURIComponent(text);
+    else window.location.href="https://m.youtube.com";
+  }
 
-  document.getElementById("mobile").onclick=openMobileSearch;
-
-  document.getElementById("openyt").onclick=function(){
-    if(currentId) window.location.href="https://m.youtube.com/watch?v="+currentId;
+  document.getElementById("go").onclick=doSearch;
+  document.getElementById("mobile").onclick=openMobile;
+  document.getElementById("yt").onclick=function(){
+    if(currentVideoId)window.location.href="https://m.youtube.com/watch?v="+currentVideoId;
     else window.location.href="https://m.youtube.com";
   };
-
   document.getElementById("clear").onclick=function(){
     player.src="";
-    currentId="";
-    status.innerText="Đã xóa";
+    currentVideoId="";
+    results.innerHTML='<div id="empty">Đã xóa. Gõ từ khóa hoặc dán link để xem tiếp.</div>';
+    setStatus("Sẵn sàng");
   };
-
   q.onkeypress=function(e){
     e=e||window.event;
     if(e.keyCode===13){
       if(e.preventDefault)e.preventDefault();
-      document.getElementById("go").onclick();
+      doSearch();
       return false;
     }
   };
 
-  var last=localStorage.getItem("ytlite_last")||"";
-  if(last) play(last);
+  var last=localStorage.getItem("ytmini3_last")||"";
+  if(last)play(last,"Video trước đó");
 })();
 </script>
 </body>
