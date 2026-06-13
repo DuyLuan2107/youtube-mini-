@@ -4,55 +4,65 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-title" content="YT Mini 3">
+<meta name="apple-mobile-web-app-title" content="Inv Mini">
 <link rel="apple-touch-icon" href="icon.png">
-<title>YouTube Mini v3</title>
+<title>Invidious Mini v4</title>
 <style>
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html,body{margin:0;padding:0;height:100%;font-family:-apple-system,Helvetica,Arial,sans-serif;background:#111;color:#fff}
 body{overflow:hidden}
 #app{height:100%;display:flex;flex-direction:column;background:#111}
 #top{height:48px;background:#181818;border-bottom:1px solid #333;display:flex;align-items:center;gap:6px;padding:0 8px;flex-shrink:0}
-#logo{font-weight:bold;font-size:15px;color:#fff;white-space:nowrap}
+#logo{font-weight:bold;font-size:14px;color:#fff;white-space:nowrap}
 #q{flex:1;height:34px;border:1px solid #444;border-radius:18px;background:#222;color:#fff;padding:0 12px;font-size:14px;outline:none}
-.btn{border:0;border-radius:17px;background:#e60000;color:#fff;padding:8px 10px;font-size:13px}
+.btn{border:0;border-radius:17px;background:#e60000;color:#fff;padding:8px 9px;font-size:13px}
 .gray{background:#333;color:#eee}
-#player{width:100%;height:218px;border:0;background:#000;display:block;flex-shrink:0}
-#bar{height:40px;background:#181818;border-top:1px solid #333;border-bottom:1px solid #333;display:flex;align-items:center;gap:6px;padding:4px 8px;flex-shrink:0}
+#bar{height:42px;background:#181818;border-bottom:1px solid #333;display:flex;align-items:center;gap:6px;padding:4px 8px;flex-shrink:0}
+#server{height:32px;border:1px solid #444;border-radius:16px;background:#222;color:#fff;font-size:12px;max-width:155px}
 #status{flex:1;font-size:12px;color:#aaa;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-#results{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;background:#111}
-.item{display:flex;gap:8px;padding:8px;border-bottom:1px solid #252525;background:#111}
-.thumb{width:112px;height:63px;background:#222;object-fit:cover;flex-shrink:0}
-.info{flex:1;min-width:0}
-.title{font-size:14px;line-height:1.25;max-height:38px;overflow:hidden}
-.channel{font-size:12px;color:#aaa;margin-top:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.meta{font-size:11px;color:#777;margin-top:3px}
-#empty{color:#aaa;text-align:center;padding:24px 12px;font-size:14px;line-height:1.5}
+#frame{flex:1;width:100%;border:0;background:#000;display:block}
+#fallback{display:none;flex:1;overflow:auto;-webkit-overflow-scrolling:touch;padding:14px;background:#111}
+.card{background:#1d1d1f;border:1px solid #333;border-radius:14px;padding:12px;margin-bottom:10px}
+.card h3{margin:0 0 8px 0;font-size:15px}
+.card p{font-size:13px;line-height:1.4;color:#bbb;margin:0 0 10px 0}
+.full{width:100%;margin-top:8px}
+.small{font-size:12px;color:#999;line-height:1.4}
+a{color:#8ec5ff}
 </style>
 </head>
 <body>
 <div id="app">
   <div id="top">
-    <div id="logo">YT Mini</div>
-    <input id="q" placeholder="Gõ từ khóa hoặc dán link">
+    <div id="logo">Inv Mini</div>
+    <input id="q" placeholder="Từ khóa hoặc link video">
     <button class="btn" id="go">Tìm</button>
   </div>
 
-  <iframe id="player" allowfullscreen></iframe>
-
   <div id="bar">
-    <button class="btn gray" id="clear">Xóa</button>
-    <button class="btn gray" id="mobile">Mobile</button>
-    <button class="btn gray" id="yt">YouTube</button>
+    <select id="server">
+      <option value="https://inv.nadeko.net">inv.nadeko.net</option>
+      <option value="https://yewtu.be">yewtu.be</option>
+      <option value="https://invidious.privacyredirect.com">privacyredirect</option>
+      <option value="https://iv.datura.network">iv.datura.network</option>
+      <option value="https://invidious.snopyta.org">snopyta</option>
+    </select>
+    <button class="btn gray" id="home">Home</button>
+    <button class="btn gray" id="open">Mở</button>
     <div id="status">Sẵn sàng</div>
   </div>
 
-  <div id="results">
-    <div id="empty">
-      <b>YouTube Mini v3</b><br>
-      Gõ từ khóa như “tái sinh”, “lofi”, “doraemon” rồi bấm Tìm.<br>
-      Kết quả sẽ hiện trong app nếu nguồn công khai còn hoạt động.<br><br>
-      Nếu lỗi, bấm Mobile để mở tìm kiếm YouTube mobile.
+  <iframe id="frame"></iframe>
+
+  <div id="fallback">
+    <div class="card">
+      <h3>Không nhúng được trang</h3>
+      <p>Một số server Invidious không cho hiển thị bên trong iframe. Bấm “Mở” để mở server hiện tại trong Safari/app web.</p>
+      <button class="btn full" id="open2">Mở trang hiện tại</button>
+    </div>
+    <div class="card">
+      <h3>Cách dùng</h3>
+      <p>Chọn server → nhập từ khóa như <b>tái sinh</b> → bấm Tìm. Nếu server lỗi, đổi server khác.</p>
+      <p class="small">Bản này không cần API. Nó dùng Invidious như một YouTube nhẹ hơn.</p>
     </div>
   </div>
 </div>
@@ -60,18 +70,26 @@ body{overflow:hidden}
 <script>
 (function(){
   var q=document.getElementById("q");
-  var player=document.getElementById("player");
-  var results=document.getElementById("results");
+  var server=document.getElementById("server");
+  var frame=document.getElementById("frame");
+  var fallback=document.getElementById("fallback");
   var status=document.getElementById("status");
-  var currentVideoId="";
-  var instances=[
-    "https://inv.nadeko.net",
-    "https://yewtu.be",
-    "https://invidious.privacyredirect.com",
-    "https://iv.datura.network"
-  ];
+  var currentUrl="";
+  var lastLoadTime=0;
 
   function setStatus(s){status.innerText=s||"";}
+
+  function save(){
+    localStorage.setItem("invmini_server", server.value);
+    if(q.value)localStorage.setItem("invmini_query", q.value);
+  }
+
+  function loadSaved(){
+    var s=localStorage.getItem("invmini_server");
+    if(s)server.value=s;
+    var lq=localStorage.getItem("invmini_query");
+    if(lq)q.value=lq;
+  }
 
   function extractVideoId(text){
     text=String(text||"").trim();
@@ -84,141 +102,88 @@ body{overflow:hidden}
     return "";
   }
 
-  function play(id,title){
-    if(!id)return;
-    currentVideoId=id;
-    localStorage.setItem("ytmini3_last",id);
-    player.src="https://www.youtube.com/embed/"+id+"?rel=0&modestbranding=1&playsinline=1";
-    setStatus(title||("Đang phát: "+id));
+  function showFrame(){
+    frame.style.display="block";
+    fallback.style.display="none";
   }
 
-  function escapeHtml(s){
-    return String(s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+  function showFallback(){
+    frame.style.display="none";
+    fallback.style.display="block";
   }
 
-  function render(items){
-    results.innerHTML="";
-    if(!items || !items.length){
-      results.innerHTML='<div id="empty">Không có kết quả hoặc nguồn đang lỗi. Bấm Mobile để tìm trên YouTube mobile.</div>';
-      return;
-    }
-    var count=0;
-    for(var i=0;i<items.length;i++){
-      var it=items[i];
-      var id=it.videoId || it.id;
-      if(!id || id.length!==11)continue;
-      count++;
-      var div=document.createElement("div");
-      div.className="item";
+  function goUrl(url,label){
+    currentUrl=url;
+    showFrame();
+    setStatus(label||"Đang mở...");
+    lastLoadTime=new Date().getTime();
+    frame.src=url;
+    localStorage.setItem("invmini_last_url",url);
 
-      var img=document.createElement("img");
-      img.className="thumb";
-      if(it.videoThumbnails && it.videoThumbnails.length){
-        img.src=it.videoThumbnails[0].url;
-      }else{
-        img.src="https://i.ytimg.com/vi/"+id+"/mqdefault.jpg";
+    // Nếu iframe bị server chặn, nhiều khi chỉ hiện trắng. Sau 5 giây hiện gợi ý.
+    setTimeout(function(){
+      var diff=(new Date().getTime())-lastLoadTime;
+      if(diff>=4900){
+        setStatus("Nếu trắng/lỗi, bấm Mở hoặc đổi server.");
       }
-
-      var info=document.createElement("div");
-      info.className="info";
-
-      var t=document.createElement("div");
-      t.className="title";
-      t.innerText=it.title || id;
-
-      var ch=document.createElement("div");
-      ch.className="channel";
-      ch.innerText=it.author || it.channelTitle || "";
-
-      var meta=document.createElement("div");
-      meta.className="meta";
-      var views=it.viewCount ? (it.viewCount+" lượt xem") : "";
-      var len=it.lengthSeconds ? Math.floor(it.lengthSeconds/60)+":"+("0"+(it.lengthSeconds%60)).slice(-2) : "";
-      meta.innerText=(len?len+" • ":"")+views;
-
-      info.appendChild(t); info.appendChild(ch); info.appendChild(meta);
-      div.appendChild(img); div.appendChild(info);
-
-      (function(videoId,titleText){
-        div.onclick=function(){play(videoId,titleText);};
-      })(id,it.title||"");
-
-      results.appendChild(div);
-      if(count>=10)break;
-    }
-    if(count===0)results.innerHTML='<div id="empty">Không có video hợp lệ.</div>';
+    },5000);
   }
 
-  function searchWithInstance(query,idx){
-    if(idx>=instances.length){
-      results.innerHTML='<div id="empty">Các nguồn công khai đang lỗi/chặn. Bấm Mobile để mở tìm kiếm YouTube mobile.</div>';
-      setStatus("Nguồn lỗi");
-      return;
-    }
-    var base=instances[idx];
-    setStatus("Đang tìm qua nguồn "+(idx+1)+"...");
-    var url=base+"/api/v1/search?q="+encodeURIComponent(query)+"&type=video";
-    var xhr=new XMLHttpRequest();
-    xhr.open("GET",url,true);
-    xhr.onreadystatechange=function(){
-      if(xhr.readyState===4){
-        if(xhr.status>=200 && xhr.status<300){
-          try{
-            var data=JSON.parse(xhr.responseText);
-            render(data);
-            setStatus("Kết quả: "+query);
-            localStorage.setItem("ytmini3_last_query",query);
-          }catch(e){
-            searchWithInstance(query,idx+1);
-          }
-        }else{
-          searchWithInstance(query,idx+1);
-        }
-      }
-    };
-    xhr.onerror=function(){searchWithInstance(query,idx+1);};
-    xhr.send();
-  }
-
-  function doSearch(){
+  function search(){
     var text=q.value.replace(/^\s+|\s+$/g,"");
     if(!text)return;
+    save();
+
     var id=extractVideoId(text);
-    if(id){play(id,"Video từ link");return;}
-    results.innerHTML='<div id="empty">Đang tìm “'+escapeHtml(text)+'”...</div>';
-    searchWithInstance(text,0);
+    var base=server.value.replace(/\/$/,"");
+
+    if(id){
+      goUrl(base+"/watch?v="+encodeURIComponent(id),"Mở video qua "+base);
+    }else{
+      goUrl(base+"/search?q="+encodeURIComponent(text),"Tìm: "+text);
+    }
   }
 
-  function openMobile(){
-    var text=q.value.replace(/^\s+|\s+$/g,"");
-    if(!text)text=localStorage.getItem("ytmini3_last_query")||"";
-    if(text)window.location.href="https://m.youtube.com/results?search_query="+encodeURIComponent(text);
-    else window.location.href="https://m.youtube.com";
+  function home(){
+    var base=server.value.replace(/\/$/,"");
+    goUrl(base,"Trang chủ");
   }
 
-  document.getElementById("go").onclick=doSearch;
-  document.getElementById("mobile").onclick=openMobile;
-  document.getElementById("yt").onclick=function(){
-    if(currentVideoId)window.location.href="https://m.youtube.com/watch?v="+currentVideoId;
-    else window.location.href="https://m.youtube.com";
+  function openCurrent(){
+    var url=currentUrl || server.value;
+    window.location.href=url;
+  }
+
+  document.getElementById("go").onclick=search;
+  document.getElementById("home").onclick=home;
+  document.getElementById("open").onclick=openCurrent;
+  document.getElementById("open2").onclick=openCurrent;
+
+  server.onchange=function(){
+    save();
+    setStatus("Đã đổi server");
   };
-  document.getElementById("clear").onclick=function(){
-    player.src="";
-    currentVideoId="";
-    results.innerHTML='<div id="empty">Đã xóa. Gõ từ khóa hoặc dán link để xem tiếp.</div>';
-    setStatus("Sẵn sàng");
-  };
+
   q.onkeypress=function(e){
     e=e||window.event;
     if(e.keyCode===13){
       if(e.preventDefault)e.preventDefault();
-      doSearch();
+      search();
       return false;
     }
   };
 
-  var last=localStorage.getItem("ytmini3_last")||"";
-  if(last)play(last,"Video trước đó");
+  frame.onload=function(){
+    setStatus("Đã tải. Nếu không xem được, đổi server.");
+  };
+
+  loadSaved();
+  var last=localStorage.getItem("invmini_last_url");
+  if(last){
+    goUrl(last,"Mở lại trang trước");
+  }else{
+    showFallback();
+  }
 })();
 </script>
 </body>
